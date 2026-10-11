@@ -56,7 +56,7 @@ Publishing DHCP ports does not forward raw client broadcasts or link-local DHCPv
 
 Check Compose with DNS disabled and enabled, using the public `.env.example` rather than reading deployment secrets. `kea-init` must exit successfully before Kea starts. Verify daemon health, Stork agent discovery/authorization, and Prometheus targets separately from client leasing, renewal, and DDNS behavior. Do not claim functional DHCP/DDNS validation from healthy containers or dashboards alone.
 
-Use `.agents/skills/kea-stack/SKILL.md` for deployment changes and `.agents/skills/kea-stack-test/SKILL.md` for validation and test failures. Local script and image checks belong here; end-to-end DHCP client tests belong in the separate `../kea-stack-test` repository. Read that repository's guidance before working there; this repository's scope does not authorize changes to the sibling project.
+Use `.agents/skills/kea-stack/SKILL.md` for deployment changes. Local script and image checks belong here; end-to-end DHCP client tests belong in the separate `../kea-stack-test` repository. Read that repository's guidance before working there; this repository's scope does not authorize changes to the sibling project.
 
 ### Agent lifecycle and monitoring
 

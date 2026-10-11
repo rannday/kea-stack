@@ -211,6 +211,7 @@ services:
     depends_on:
       dhcp4:
         condition: service_healthy
+        restart: true
     volumes:
       - dhcp4_runtime:/run/kea:ro
       - agent4_state:/var/lib/stork-agent
@@ -228,6 +229,7 @@ services:
     depends_on:
       dhcp6:
         condition: service_healthy
+        restart: true
     volumes:
       - dhcp6_runtime:/run/kea:ro
       - agent6_state:/var/lib/stork-agent
@@ -246,6 +248,7 @@ services:
     depends_on:
       ddns:
         condition: service_healthy
+        restart: true
     volumes:
       - ddns_runtime:/run/kea:ro
       - agent-ddns_state:/var/lib/stork-agent

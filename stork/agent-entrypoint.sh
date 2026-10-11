@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-STORK_AGENT_HOST="$(getent ahostsv4 "$KEA_SERVICE" | awk 'NR == 1 { print $1 }')"
+STORK_AGENT_HOST="${KEA_SERVICE:?Set KEA_SERVICE}"
 export STORK_AGENT_HOST
 export STORK_AGENT_SERVER_URL=http://stork:8080
 export STORK_AGENT_PORT=8080

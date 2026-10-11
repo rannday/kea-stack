@@ -8,6 +8,10 @@ These are the only custom images in the stack. Compose uses local names `kea-sta
 
 Start with `docker compose up -d --build`. Sign in to http://localhost:8080 with `admin` / `admin` and change the password. Add or approve each agent through Stork's Machines page. Each agent uses port 8080 on its daemon's internal address. These agent ports are internal; only the Stork server is published.
 
+Agents register using the stable Compose names `dhcp4`, `dhcp6`, and optional `ddns`, rather than Docker-assigned IP addresses. Keep the Stork database and agent identity volumes when running `docker compose down` followed by `docker compose up -d`; approved registrations then survive changing container addresses. The existing `pull_policy: build` rebuilds the agent image when its copied entrypoint changes.
+
+Each agent dependency includes `restart: true`, so explicit Compose restarts or updates of a daemon also restart its agent. This requires Compose 2.17.0 or newer. It does not propagate Docker Engine automatic restarts or direct `docker restart` operations. Because agents share the daemon's PID namespace, stopping the daemon can kill its agent; use Compose to manage the pair. A complete `docker compose down` / `docker compose up -d` cycle recreates both containers in dependency order.
+
 Check `docker compose logs stork agent4 agent6` and optional `agent-ddns`. Prometheus scrapes DHCP exporter endpoints at `dhcp4:9547` and `dhcp6:9547`, using the agents' shared network namespaces. The agent image includes matching Kea binaries because Stork executes them with `-v` during discovery. Stork 2.4.2 skips some new Kea 3.2 statistics with warnings; supported metrics remain available. Review [backup planning](backups.md) for the separate Stork database.
 
 With DNS enabled, authorize all three agents and check that DHCPv4, DHCPv6, and DDNS appear under Stork services. Prometheus also scrapes the Stork server and optional BIND exporter; it has no separate DDNS scrape target. Agent registration and healthy metrics do not establish that client leasing or DDNS updates work.

@@ -88,13 +88,14 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(up{job=\"kea\",instance=\"dhcp:9547\"})",
-          "legendFormat": "dhcp",
-          "range": true,
+          "expr": "up{job=\"kea\",instance=~\"dhcp[46]:9547\"}",
+          "legendFormat": "{{instance}}",
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
-      "title": "dhcp Exporter",
+      "title": "DHCP Exporters",
       "type": "stat"
     },
     {

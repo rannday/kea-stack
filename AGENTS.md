@@ -56,6 +56,16 @@ Publishing DHCP ports does not forward raw client broadcasts or link-local DHCPv
 
 Check Compose with DNS disabled and enabled, using the public `.env.example` rather than reading deployment secrets. `kea-init` must exit successfully before Kea starts. Verify daemon health, Stork agent discovery/authorization, and Prometheus targets separately from client leasing, renewal, and DDNS behavior. Do not claim functional DHCP/DDNS validation from healthy containers or dashboards alone.
 
+Use `.agents/skills/kea-stack/SKILL.md` for deployment changes and `.agents/skills/kea-stack-test/SKILL.md` for validation and test failures. Local script and image checks belong here; end-to-end DHCP client tests belong in the separate `../kea-stack-test` repository. Read that repository's guidance before working there; this repository's scope does not authorize changes to the sibling project.
+
+### Agent lifecycle and monitoring
+
+Keep each Kea daemon and Stork agent in separate containers. Agents share their daemon's PID and network namespaces; stopping the daemon can terminate its agent. Preserve `depends_on` health conditions and `restart: true` for each daemon/agent pair. Compose dependency restarts apply to Compose-controlled operations; direct Docker Engine restarts are not covered. When a test changes daemon networking or restarts it directly, inspect the matching agent's state and restore the pair through Compose within the authorized test scope.
+
+Routine `docker compose down` followed by `docker compose up -d` must work with retained volumes. Register agents using stable service names from `KEA_SERVICE`, not container IPs, and preserve their separate identity volumes. Do not add migrations or volume resets as routine recovery steps during this early development phase.
+
+Prometheus scrapes DHCP exporters at `dhcp4:9547` and `dhcp6:9547` under job `kea`. Check agent availability and target health before interpreting Grafana panels; verify panel selectors against actual labels. There is no separate DDNS exporter target. Redact tokens, credentials, and rendered configuration when reporting logs or diagnostics.
+
 ## Development scripts
 
 PowerShell helpers live in `scripts/ps/` with tests in `scripts/ps/tests/`; POSIX shell scripts live in `scripts/sh/` with tests in `scripts/sh/tests/`. The official-image test Compose override lives beside its PowerShell runner in `scripts/ps/tests/compose.official.yaml`.

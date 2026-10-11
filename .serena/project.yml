@@ -37,6 +37,7 @@ project_name: "kea-stack"
 # Note that when using the JetBrains backend, language servers are not used and this list is correspondingly ignored.
 language_servers:
   - bash
+  - powershell
   - yaml
   - json
   - markdown
@@ -118,6 +119,13 @@ ignored_paths:
   - "**/node_modules/**"
   - "**/__pycache__/**"
   - ".env"
+  - "**/.env"
+  - "**/.env.*"
+  - "!**/.env.example"
+  - "**/*.pem"
+  - "**/*.key"
+  - ".serena/cache/**"
+  - ".serena/project.local.yml"
 
 # whether the project is in read-only mode
 # If set to true, all editing tools will be disabled and attempts to use them will result in an error
@@ -156,7 +164,7 @@ added_modes:
 
 # initial prompt for the project. It will always be given to the LLM upon activating the project
 # (contrary to the memories, which are loaded on demand).
-initial_prompt: "This repository builds a standalone ISC Kea stack with one Kea server, one BIND DNS server, PostgreSQL, Stork, Prometheus, and Grafana. Keep the default stack separate from the optional kea-stack-ha deployment. Treat .env as secret and never read or index it."
+initial_prompt: "Work within kea-stack and follow AGENTS.md. Use .agents/skills/kea-stack/SKILL.md for deployment work and .agents/skills/kea-stack-test/SKILL.md for validation. This is one DHCPv4/DHCPv6 deployment; BIND and DDNS are optional under the dns profile. Kea daemons use official images; Stork agents remain separate containers sharing daemon PID/network namespaces. Keep lease and shared databases distinct, use stable Compose service names, and preserve volumes for routine down/up. HA and the sibling kea-stack-test client harness are separate projects; do not activate them here. Never read or index real .env files, secret-bearing variants, PEM files, or private keys; .env.example is the public validation template. Do not write Serena memories without explicit authorization."
 
 # time budget (seconds) per tool call for the retrieval of additional symbol information
 # such as docstrings or parameter information.

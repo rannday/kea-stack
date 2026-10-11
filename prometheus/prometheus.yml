@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: kea
+    static_configs:
+      - targets:
+          - dhcp4:9547
+          - dhcp6:9547
+
+  - job_name: storkserver
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - stork:8080
+
+  - job_name: bind
+    static_configs:
+      - targets:
+          - dns:9119

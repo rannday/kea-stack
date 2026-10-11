@@ -1,0 +1,57 @@
+# Use with --env-file .env.example and -p kea-official-test.
+# No host ports; runtime logs and application data stay in test project volumes.
+services:
+  dns:
+    ports: !reset []
+  dhcp4:
+    ports: !reset []
+    volumes: !override
+      - ./dhcp4/entrypoint.sh:/config/entrypoint.sh:ro
+      - ./dhcp4/render.awk:/config/render.awk:ro
+      - ./dhcp4/healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./dhcp4/kea-dhcp4.conf:/etc/kea/kea-dhcp4.conf:ro
+      - dhcp4_runtime:/run/kea
+      - dhcp_state:/var/lib/kea
+      - test_logs:/var/log/kea
+  dhcp6:
+    ports: !reset []
+    volumes: !override
+      - ./dhcp6/entrypoint.sh:/config/entrypoint.sh:ro
+      - ./dhcp6/render.awk:/config/render.awk:ro
+      - ./dhcp6/healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./dhcp6/kea-dhcp6.conf:/etc/kea/kea-dhcp6.conf:ro
+      - dhcp6_runtime:/run/kea
+      - dhcp_state:/var/lib/kea
+      - test_logs:/var/log/kea
+  ddns:
+    ports: !reset []
+    volumes: !override
+      - ./ddns/entrypoint.sh:/config/entrypoint.sh:ro
+      - ./ddns/render.awk:/config/render.awk:ro
+      - ./ddns/healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./ddns/kea-dhcp-ddns.conf:/etc/kea/kea-dhcp-ddns.conf:ro
+      - ddns_runtime:/run/kea
+      - test_logs:/var/log/kea
+  agent4:
+    volumes: !override
+      - dhcp4_runtime:/run/kea:ro
+      - agent4_state:/var/lib/stork-agent
+      - test_logs:/var/log/kea:ro
+  agent6:
+    volumes: !override
+      - dhcp6_runtime:/run/kea:ro
+      - agent6_state:/var/lib/stork-agent
+      - test_logs:/var/log/kea:ro
+  agent-ddns:
+    volumes: !override
+      - ddns_runtime:/run/kea:ro
+      - agent-ddns_state:/var/lib/stork-agent
+      - test_logs:/var/log/kea:ro
+  stork:
+    ports: !reset []
+  prometheus:
+    ports: !reset []
+  grafana:
+    ports: !reset []
+volumes:
+  test_logs:
